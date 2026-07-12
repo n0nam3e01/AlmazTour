@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+/*
+  Дизайн-система Almaz Tour.
+  Палитра извлечена из фирменного логотипа:
+  - тёмно-синий (алмаз, самолёт, текст): #000942
+  - золотой (ленты): #FFCC00
+  - лазурный (грани алмаза): #5DA8D3
+*/
+@theme {
+  /* Фирменный тёмно-синий */
+  --color-navy-50: #eef0f9;
+  --color-navy-100: #dbdff2;
+  --color-navy-200: #b5bde5;
+  --color-navy-300: #8b97d4;
+  --color-navy-400: #5b6ab8;
+  --color-navy-500: #36459b;
+  --color-navy-600: #24307f;
+  --color-navy-700: #182263;
+  --color-navy-800: #0d164f;
+  --color-navy-900: #061046;
+  --color-navy-950: #000942;
+
+  /* Фирменный золотой — единственный акцент для CTA */
+  --color-gold-100: #fff6cc;
+  --color-gold-200: #ffec99;
+  --color-gold-300: #ffdd4d;
+  --color-gold-400: #ffcc00;
+  --color-gold-500: #edbd00;
+  --color-gold-600: #d3a800;
+
+  /* Лазурный — грани алмаза, вспомогательные детали и подложки */
+  --color-azure-50: #f4f9fc;
+  --color-azure-100: #e6f1f8;
+  --color-azure-200: #c8e0f0;
+  --color-azure-300: #a3cce4;
+  --color-azure-400: #7cb8da;
+  --color-azure-500: #5da8d3;
+  --color-azure-600: #3f8dbb;
+  --color-azure-700: #327199;
+
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+
+  /* Мягкие тени с синим подтоном вместо чёрных */
+  --shadow-card: 0 1px 2px rgb(0 9 66 / 0.06), 0 8px 24px -8px rgb(0 9 66 / 0.12);
+  --shadow-card-hover: 0 2px 4px rgb(0 9 66 / 0.08), 0 16px 40px -12px rgb(0 9 66 / 0.22);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #ffffff;
+  color: var(--color-navy-950);
+  font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-gold-300);
+  color: var(--color-navy-950);
+}
+
+/* Появление секций при скролле: класс ставит Reveal-компонент */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Обёртка модулей Tourvisor: аккуратно вписываем виджет в дизайн сайта */
+.tv-wrap {
+  font-family: var(--font-sans);
+}
+
+.tv-wrap iframe {
+  border-radius: 12px;
+}
