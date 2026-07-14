@@ -42,7 +42,7 @@ export default function ContactsPage() {
                   ))}
                 </ul>
                 <a
-                  href={`https://2gis.kz/astana/search/${encodeURIComponent("Достык 4 Festival Avenue")}`}
+                  href={site.address.map2gis}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-4 inline-block text-sm font-bold text-azure-600 hover:text-navy-950"

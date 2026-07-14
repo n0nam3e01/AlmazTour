@@ -61,6 +61,7 @@ const jsonLd = {
     addressCountry: "KZ",
     streetAddress: "ул. Достык 4, ТЦ «Festival Avenue»",
   },
+  hasMap: site.address.map2gis,
   openingHoursSpecification: [
     {
       "@type": "OpeningHoursSpecification",

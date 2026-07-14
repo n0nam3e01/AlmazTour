@@ -20,6 +20,9 @@ export const site = {
     city: "Астана",
     line: "ул. Достык 4, ТЦ «Festival Avenue»",
     full: "г. Астана, ул. Достык 4, ТЦ «Festival Avenue»",
+    /* Прямая ссылка на карточку офиса в 2ГИС */
+    map2gis:
+      "https://2gis.kz/astana/firm/70000001034461305/71.408133%2C51.127951?m=71.408289%2C51.127873%2F20",
   },
 
   hours: [
