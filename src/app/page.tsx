@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { TourvisorModule } from "@/components/TourvisorModule";
 import { DestinationCard } from "@/components/DestinationCard";
+import { PhotoMosaic } from "@/components/PhotoMosaic";
 import { ReviewCard } from "@/components/ReviewCard";
 import { Reveal } from "@/components/Reveal";
 import { CountUp } from "@/components/CountUp";
@@ -12,8 +13,8 @@ import { site } from "@/data/site";
 /* Преимущества — с текущего сайта, тексты причёсаны */
 const benefits = [
   {
-    title: "15 направлений",
-    text: "От Турции и Египта до Мальдив и Сингапура. Подберём страну под сезон, бюджет и настроение.",
+    title: "В любую точку мира",
+    text: "Турция и Египет, Мальдивы и Сингапур, Европа и экзотика. Подберём страну под сезон, бюджет и настроение.",
     icon: (
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.8" />
@@ -31,12 +32,12 @@ const benefits = [
     ),
   },
   {
-    title: "Честные цены",
-    text: "Работаем с турами любых ценовых категорий и следим за горящими предложениями каждый день.",
+    title: "Отели знаем лично",
+    text: "Алия сама ездит по курортам и смотрит отели своими глазами. Мы советуем то, что проверили, а не то, что красиво в каталоге.",
     icon: (
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <rect x="3" y="6" width="18" height="13" rx="2.5" stroke="currentColor" strokeWidth="1.8" />
-        <path d="M3 10h18M7 15h4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        <path d="M4 21V6.5a1.5 1.5 0 0 1 1.5-1.5h9A1.5 1.5 0 0 1 16 6.5V21M16 11h2.5A1.5 1.5 0 0 1 20 12.5V21M2.5 21h19" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M7.5 9h2M7.5 13h2M12.5 9h.01M12.5 13h.01" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
       </svg>
     ),
   },
@@ -53,7 +54,8 @@ const benefits = [
 ];
 
 export default function HomePage() {
-  const featured = destinations.slice(0, 6);
+  /* Девять карточек: три полных ряда на десктопе */
+  const featured = destinations.slice(0, 9);
 
   return (
     <>
@@ -78,7 +80,7 @@ export default function HomePage() {
               <br />в путешествия
             </h1>
             <p className="mt-5 max-w-lg text-lg leading-relaxed text-white/85">
-              Туры из Астаны по 15 направлениям: подберём отель, оформим
+              Туры из Астаны в любую точку мира: подберём отель, оформим
               документы и будем на связи всю поездку.
             </p>
             <div className="mt-7 flex flex-wrap items-center gap-4">
@@ -154,8 +156,8 @@ export default function HomePage() {
               Куда поедем?
             </h2>
             <p className="mt-3 max-w-xl text-navy-800/70">
-              Шесть направлений, которые чаще всего выбирают наши туристы.
-              В каталоге — все пятнадцать.
+              Направления, которые выбирают чаще всего. Возим и за их пределы —
+              скажите, куда хочется, и подберём тур в любую точку мира.
             </p>
           </Reveal>
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -170,7 +172,7 @@ export default function HomePage() {
               href="/destinations"
               className="inline-block rounded-full bg-navy-950 px-8 py-3.5 text-base font-bold text-white transition-all hover:bg-navy-800 active:translate-y-px"
             >
-              Смотреть все 15 направлений
+              Смотреть все направления
             </Link>
           </Reveal>
         </div>
@@ -182,12 +184,16 @@ export default function HomePage() {
           <div className="grid gap-12 lg:grid-cols-[1fr_1.4fr] lg:gap-16">
             <Reveal>
               <h2 className="text-3xl font-extrabold tracking-tight text-navy-950 sm:text-4xl">
-                Почему с нами спокойно
+                Почему нам доверяют
               </h2>
               <p className="mt-4 leading-relaxed text-navy-800/70">
-                Almaz Tour — небольшое агентство, где каждым туром занимается
-                живой человек, а не колл-центр. Менеджер остаётся на связи от
-                первого звонка до вашего возвращения домой.
+                За плечами Almaz Tour семь лет работы и сотни собранных поездок.
+                Алия лично объезжает курорты и отбирает отели, поэтому советует
+                не по картинке из каталога, а по тому, что видела сама.
+              </p>
+              <p className="mt-4 leading-relaxed text-navy-800/70">
+                Вашей поездкой занимается живой человек и остаётся на связи от
+                первого звонка до возвращения домой.
               </p>
               <Link
                 href="/reviews"
@@ -227,6 +233,24 @@ export default function HomePage() {
               <p className="mt-2 text-sm text-white/70">{c.label}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* ===== Мозаика курортов: море, солнце и пляж без лишних слов ===== */}
+      <section className="py-16 lg:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <Reveal>
+            <h2 className="text-3xl font-extrabold tracking-tight text-navy-950 sm:text-4xl">
+              Туда, где тепло
+            </h2>
+            <p className="mt-3 max-w-xl text-navy-800/70">
+              Эти курорты наши туристы вспоминают чаще всего. Нажмите на любой,
+              чтобы посмотреть подробности.
+            </p>
+          </Reveal>
+          <Reveal className="mt-10">
+            <PhotoMosaic />
+          </Reveal>
         </div>
       </section>
 

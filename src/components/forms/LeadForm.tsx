@@ -3,11 +3,20 @@
 import { useState } from "react";
 import { destinations } from "@/data/destinations";
 
-type Errors = Partial<Record<"name" | "phone" | "email" | "country" | "dates" | "people", string>>;
+type Errors = Partial<
+  Record<"name" | "phone" | "email" | "country" | "dates" | "adults" | "children", string>
+>;
+
+/** Варианты класса отеля. «Любой» сбрасывает остальные — это отдельный случай */
+const STAR_OPTIONS = ["3★", "4★", "5★"];
 
 /**
- * Форма «Подобрать тур» — та же, что была на старом сайте:
- * имя, телефон, e-mail, страна, класс отеля, даты, количество людей.
+ * Форма «Подобрать тур».
+ *
+ * Класс отеля выбирается галочками, а не одним вариантом: 4★ и 5★ часто
+ * попадают в одну цену, и туристу важно видеть оба. Состав туристов
+ * разделён на взрослых и детей — для детей нужен возраст, потому что от
+ * него зависит и цена, и допуск в отель.
  */
 export function LeadForm({ defaultCountry }: { defaultCountry?: string }) {
   const [form, setForm] = useState({
@@ -15,17 +24,40 @@ export function LeadForm({ defaultCountry }: { defaultCountry?: string }) {
     phone: "",
     email: "",
     country: defaultCountry ?? "",
-    stars: "любой",
     dates: "",
-    people: "2",
+    adults: "2",
     comment: "",
   });
+  /* Выбранные классы отеля. Пустой массив означает «любой» */
+  const [stars, setStars] = useState<string[]>([]);
+  /* Возраст каждого ребёнка. Длина массива и есть количество детей */
+  const [children, setChildren] = useState<string[]>([]);
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "fail">("idle");
 
   function set<K extends keyof typeof form>(key: K, value: string) {
     setForm((f) => ({ ...f, [key]: value }));
     setErrors((e) => ({ ...e, [key]: undefined }));
+  }
+
+  function toggleStar(value: string) {
+    setStars((prev) =>
+      prev.includes(value) ? prev.filter((s) => s !== value) : [...prev, value]
+    );
+  }
+
+  function addChild() {
+    setChildren((prev) => [...prev, ""]);
+    setErrors((e) => ({ ...e, children: undefined }));
+  }
+
+  function setChildAge(index: number, age: string) {
+    setChildren((prev) => prev.map((v, i) => (i === index ? age : v)));
+    setErrors((e) => ({ ...e, children: undefined }));
+  }
+
+  function removeChild(index: number) {
+    setChildren((prev) => prev.filter((_, i) => i !== index));
   }
 
   function validate(): boolean {
@@ -37,7 +69,10 @@ export function LeadForm({ defaultCountry }: { defaultCountry?: string }) {
       next.email = "Похоже, в адресе почты опечатка";
     if (!form.country) next.country = "Выберите страну";
     if (!form.dates.trim()) next.dates = "Укажите хотя бы примерные даты";
-    if (!form.people.trim()) next.people = "Сколько человек едет?";
+    if (!form.adults.trim() || Number(form.adults) < 1)
+      next.adults = "Хотя бы один взрослый";
+    if (children.some((age) => age === ""))
+      next.children = "Укажите возраст каждого ребёнка";
     setErrors(next);
     return Object.keys(next).length === 0;
   }
@@ -50,7 +85,7 @@ export function LeadForm({ defaultCountry }: { defaultCountry?: string }) {
       const res = await fetch("/api/lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, stars, children }),
       });
       setStatus(res.ok ? "done" : "fail");
     } catch {
@@ -142,25 +177,45 @@ export function LeadForm({ defaultCountry }: { defaultCountry?: string }) {
         {errors.country && <p className="mt-1 text-xs text-red-500">{errors.country}</p>}
       </div>
 
-      <div>
-        <span className="mb-1.5 block text-sm font-semibold text-navy-950">Класс отеля</span>
-        <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Класс отеля">
-          {["любой", "3★", "4★", "5★"].map((v) => (
-            <button
-              key={v}
-              type="button"
-              role="radio"
-              aria-checked={form.stars === v}
-              onClick={() => set("stars", v)}
-              className={`rounded-full border px-4 py-2 text-sm font-semibold transition-colors ${
-                form.stars === v
-                  ? "border-navy-950 bg-navy-950 text-white"
-                  : "border-navy-200 text-navy-800 hover:border-navy-400"
-              }`}
-            >
-              {v}
-            </button>
-          ))}
+      {/* Класс отеля: можно отметить сразу несколько */}
+      <div className="sm:col-span-2">
+        <span className="mb-1.5 block text-sm font-semibold text-navy-950">
+          Класс отеля
+          <span className="ml-2 font-normal text-navy-400">
+            можно выбрать несколько
+          </span>
+        </span>
+        <div className="flex flex-wrap gap-2" role="group" aria-label="Класс отеля">
+          {STAR_OPTIONS.map((v) => {
+            const active = stars.includes(v);
+            return (
+              <button
+                key={v}
+                type="button"
+                aria-pressed={active}
+                onClick={() => toggleStar(v)}
+                className={`rounded-full border px-5 py-2 text-sm font-semibold transition-colors ${
+                  active
+                    ? "border-navy-950 bg-navy-950 text-white"
+                    : "border-navy-200 text-navy-800 hover:border-navy-400"
+                }`}
+              >
+                {v}
+              </button>
+            );
+          })}
+          <button
+            type="button"
+            aria-pressed={stars.length === 0}
+            onClick={() => setStars([])}
+            className={`rounded-full border px-5 py-2 text-sm font-semibold transition-colors ${
+              stars.length === 0
+                ? "border-navy-950 bg-navy-950 text-white"
+                : "border-navy-200 text-navy-800 hover:border-navy-400"
+            }`}
+          >
+            любой
+          </button>
         </div>
       </div>
 
@@ -179,19 +234,76 @@ export function LeadForm({ defaultCountry }: { defaultCountry?: string }) {
       </div>
 
       <div>
-        <label htmlFor="lead-people" className="mb-1.5 block text-sm font-semibold text-navy-950">
-          Количество людей *
+        <label htmlFor="lead-adults" className="mb-1.5 block text-sm font-semibold text-navy-950">
+          Взрослых *
         </label>
         <input
-          id="lead-people"
+          id="lead-adults"
           type="number"
           min={1}
           max={20}
-          value={form.people}
-          onChange={(e) => set("people", e.target.value)}
-          className={inputCls(errors.people)}
+          value={form.adults}
+          onChange={(e) => set("adults", e.target.value)}
+          className={inputCls(errors.adults)}
         />
-        {errors.people && <p className="mt-1 text-xs text-red-500">{errors.people}</p>}
+        {errors.adults && <p className="mt-1 text-xs text-red-500">{errors.adults}</p>}
+      </div>
+
+      {/* Дети: возраст важен для цены и правил отеля, поэтому спрашиваем его */}
+      <div className="sm:col-span-2">
+        <span className="mb-1.5 block text-sm font-semibold text-navy-950">
+          Дети
+          <span className="ml-2 font-normal text-navy-400">
+            возраст на момент поездки
+          </span>
+        </span>
+
+        {children.length > 0 && (
+          <ul className="mb-3 flex flex-wrap gap-2">
+            {children.map((age, i) => (
+              <li key={i} className="flex items-center gap-1.5 rounded-xl border border-navy-100 bg-white py-1.5 pl-3 pr-1.5">
+                <label htmlFor={`child-${i}`} className="text-sm text-navy-800">
+                  Ребёнок {i + 1}
+                </label>
+                <select
+                  id={`child-${i}`}
+                  value={age}
+                  onChange={(e) => setChildAge(i, e.target.value)}
+                  className="rounded-lg border border-navy-100 bg-white px-2 py-1 text-sm font-semibold text-navy-950 focus:outline-none focus:ring-2 focus:ring-azure-400"
+                >
+                  <option value="">возраст</option>
+                  {Array.from({ length: 18 }).map((_, age) => (
+                    <option key={age} value={String(age)}>
+                      {age === 0 ? "до 1 года" : `${age} лет`}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  onClick={() => removeChild(i)}
+                  aria-label={`Убрать ребёнка ${i + 1}`}
+                  className="flex h-7 w-7 items-center justify-center rounded-lg text-navy-400 transition-colors hover:bg-navy-50 hover:text-navy-950"
+                >
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                    <path d="M3 3l8 8M11 3l-8 8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                  </svg>
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <button
+          type="button"
+          onClick={addChild}
+          className="inline-flex items-center gap-1.5 rounded-full border border-dashed border-navy-200 px-4 py-2 text-sm font-semibold text-navy-800 transition-colors hover:border-navy-400 hover:text-navy-950"
+        >
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M7 2v10M2 7h10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+          </svg>
+          Добавить ребёнка
+        </button>
+        {errors.children && <p className="mt-1 text-xs text-red-500">{errors.children}</p>}
       </div>
 
       <div className="sm:col-span-2">
@@ -203,7 +315,7 @@ export function LeadForm({ defaultCountry }: { defaultCountry?: string }) {
           rows={3}
           value={form.comment}
           onChange={(e) => set("comment", e.target.value)}
-          placeholder="Например: первая линия, всё включено, едем с ребёнком 5 лет"
+          placeholder="Например: первая линия, всё включено, тихий отель без анимации"
           className={inputCls()}
         />
       </div>

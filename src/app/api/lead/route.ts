@@ -1,6 +1,19 @@
 import { NextResponse } from "next/server";
 import { escapeHtml, isTelegramConfigured, sendTelegramMessage } from "@/lib/telegram";
 
+/** Возраст ребёнка в читаемом виде: 0 лет звучит странно */
+function childAge(age: string): string {
+  const n = Number(age);
+  if (!Number.isFinite(n)) return age;
+  if (n === 0) return "до 1 года";
+  /* 1 год, 2 года, 5 лет — по правилам русского счёта */
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod10 === 1 && mod100 !== 11) return `${n} год`;
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return `${n} года`;
+  return `${n} лет`;
+}
+
 /**
  * Приём заявок «Подобрать тур».
  *
@@ -27,6 +40,11 @@ export async function POST(request: Request) {
     );
   }
 
+  /* Класс отеля приходит списком: 4★ и 5★ нередко стоят одинаково */
+  const stars = Array.isArray(body.stars) ? body.stars.map(String) : [];
+  /* Дети — массив возрастов, его длина и есть их количество */
+  const children = Array.isArray(body.children) ? body.children.map(String) : [];
+
   const lead = {
     type: "lead",
     receivedAt: new Date().toISOString(),
@@ -34,9 +52,10 @@ export async function POST(request: Request) {
     phone,
     email: String(body.email ?? ""),
     country,
-    stars: String(body.stars ?? ""),
+    stars,
     dates: String(body.dates ?? ""),
-    people: String(body.people ?? ""),
+    adults: String(body.adults ?? ""),
+    children,
     comment: String(body.comment ?? ""),
   };
 
@@ -45,7 +64,7 @@ export async function POST(request: Request) {
 
   if (isTelegramConfigured()) {
     /* Телефон оставляем обычным текстом — Telegram сам делает его кликабельным.
-       Необязательные поля в сообщение не включаем, чтобы не засорять его. */
+       Пустые поля в сообщение не включаем, чтобы не засорять его. */
     const lines = [
       "<b>🌴 Новая заявка на подбор тура</b>",
       "",
@@ -53,9 +72,21 @@ export async function POST(request: Request) {
       `📞 Телефон: ${escapeHtml(lead.phone)}`,
       `🌍 Страна: ${escapeHtml(lead.country)}`,
     ];
-    if (lead.stars) lines.push(`🏨 Класс отеля: ${escapeHtml(lead.stars)}`);
+
+    if (stars.length > 0) {
+      lines.push(`🏨 Класс отеля: ${escapeHtml(stars.join(", "))}`);
+    } else {
+      lines.push("🏨 Класс отеля: любой");
+    }
+
     if (lead.dates) lines.push(`📅 Даты: ${escapeHtml(lead.dates)}`);
-    if (lead.people) lines.push(`👥 Человек: ${escapeHtml(lead.people)}`);
+    if (lead.adults) lines.push(`👥 Взрослых: ${escapeHtml(lead.adults)}`);
+
+    if (children.length > 0) {
+      const ages = children.map((age) => childAge(age)).join(", ");
+      lines.push(`🧒 Детей: ${children.length} (${escapeHtml(ages)})`);
+    }
+
     if (lead.comment) lines.push(`💬 Пожелания: ${escapeHtml(lead.comment)}`);
     if (lead.email) lines.push(`📧 E-mail: ${escapeHtml(lead.email)}`);
 
