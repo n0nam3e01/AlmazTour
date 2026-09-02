@@ -74,8 +74,7 @@ export function Footer() {
             </p>
             <p className="mt-1 text-sm text-azure-300">{site.slogan}</p>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/70">
-              Туристическое агентство в Астане. Подбираем зарубежные туры с 2019
-              года: от горящих путёвок до оздоровительных программ.
+              Туристическое агентство в Астане. Подбираем зарубежные туры: от горящих путёвок до оздоровительных программ.
             </p>
             <SocialLinks className="mt-5" />
           </div>
