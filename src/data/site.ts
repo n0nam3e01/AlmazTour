@@ -39,8 +39,8 @@ export const site = {
 
   counters: [
     { value: 8, suffix: " лет", label: "подбираем туры из Астаны" },
-    { value: 1325, label: "довольных клиентов" },
-    { value: 3065, label: "отелей в подборке" },
+    { value: "множество", label: "довольных клиентов" },
+    { value: "множество", label: "отелей в подборке" },
     { value: 100, suffix: "%", label: "безопасность и надёжность" },
   ],
 } as const;
