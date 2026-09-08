@@ -26,9 +26,14 @@ const benefits = [
     title: "Всё включено",
     text: "Авиабилеты, отель, трансфер, страховка. Берём на себя все детали поездки — вам остаётся собрать чемодан.",
     icon: (
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M4 19h16M10.5 5.5 8 8l-4.5-.9L2 8.7l5 3-1.7 3.6 1.5 1 3-2.9 4.6 2.8c.5.3 1.1.1 1.4-.4l.4-.8c.2-.5.1-1-.3-1.4L12 10l2.6-2.7a1.7 1.7 0 0 0-2.4-2.4l-1.7.6Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-      </svg>
+      <Image
+        src="/images/icons/plane-for-almaz-tour.png"
+        alt=""
+        width={26}
+        height={26}
+        aria-hidden="true"
+        className="h-[26px] w-[26px] rounded-sm"
+      />
     ),
   },
   {
