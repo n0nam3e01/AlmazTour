@@ -70,9 +70,14 @@ export default async function DestinationPage({ params }: Props) {
           <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-navy-950/50 to-navy-950/30" />
         </div>
         <div className="relative mx-auto max-w-7xl px-4 pb-14 pt-20 sm:px-6 lg:px-8 lg:pb-20 lg:pt-28">
-          <Link href="/" className="mb-5 inline-flex min-h-11 items-center gap-2 rounded-xl border border-white/30 bg-navy-950/60 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-navy-950">
-            <span aria-hidden="true">←</span> На главную
-          </Link>
+          <div className="mb-5 flex flex-wrap gap-2">
+            <Link href="/destinations" className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-gold-300/60 bg-gold-400 px-4 py-2 text-sm font-bold text-navy-950 shadow-sm transition-colors hover:bg-gold-300">
+              <span aria-hidden="true">←</span> Все направления
+            </Link>
+            <Link href="/" className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-white/30 bg-navy-950/60 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-navy-950">
+              На главную
+            </Link>
+          </div>
           <nav aria-label="Хлебные крошки" className="text-sm text-white/85">
             <Link href="/destinations" className="hover:text-gold-300">
               Направления

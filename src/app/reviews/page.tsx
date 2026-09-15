@@ -29,9 +29,9 @@ export default function ReviewsPage() {
       <section className="py-12 lg:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="columns-1 gap-6 md:columns-2 lg:columns-3 [&>*]:mb-6 [&>*]:break-inside-avoid">
-            {reviews.map((r, i) => (
-              <Reveal key={r.name + i} delay={(i % 3) * 70}>
-                <ReviewCard review={r} full />
+            {reviews.map((review, index) => (
+              <Reveal key={review.name + index} delay={(index % 3) * 70}>
+                <ReviewCard review={review} full />
               </Reveal>
             ))}
           </div>

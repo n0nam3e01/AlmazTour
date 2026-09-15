@@ -5,7 +5,7 @@ import { Reveal } from "@/components/Reveal";
 import { destinations } from "@/data/destinations";
 
 export const metadata: Metadata = {
-  title: "Направления — туры в любую точку мира",
+  title: "Популярные направления — туры в любую точку мира",
   description:
     "Каталог направлений Almaz Tour: Турция, Египет, ОАЭ, Таиланд, Мальдивы, Вьетнам, Греция и другие страны. Описания, сезоны и советы по каждому направлению.",
   alternates: { canonical: "/destinations" },
@@ -20,10 +20,10 @@ export default function DestinationsPage() {
             <span aria-hidden="true">←</span> На главную
           </Link>
           <h1 className="text-4xl font-extrabold tracking-tight text-navy-950 sm:text-5xl">
-            Наши направления
+            Популярные направления
           </h1>
           <p className="mt-4 max-w-2xl text-lg leading-relaxed text-navy-800/70">
-            Страны, которые мы знаем вдоль и поперёк: у каждой своя страница с
+            Популярные страны, которые мы знаем вдоль и поперёк: у каждой своя страница с
             сезонами, курортами и причинами поехать именно туда. Нужного
             направления нет в списке? Организуем поездку в любую точку мира —
             просто напишите нам.

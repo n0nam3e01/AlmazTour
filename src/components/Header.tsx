@@ -5,6 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { site } from "@/data/site";
+import { AnimatedNavDock } from "@/components/AnimatedNavDock";
 
 const nav = [
   { href: "/", label: "Главная" },
@@ -46,25 +47,7 @@ export function Header() {
           />
         </Link>
 
-        <nav className="hidden items-center gap-1 lg:flex" aria-label="Основное меню">
-          {nav.map((item) => {
-            const active =
-              item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`rounded-lg px-3 py-2 text-[15px] font-semibold transition-colors ${
-                  active
-                    ? "border-b-2 border-gold-400 text-navy-950"
-                    : "text-navy-800/80 hover:text-navy-950"
-                }`}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
+        <AnimatedNavDock items={nav} pathname={pathname} />
 
         <div className="hidden items-center gap-4 lg:flex">
           <a

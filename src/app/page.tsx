@@ -2,7 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { PhotoMosaic } from "@/components/PhotoMosaic";
 import { Reveal } from "@/components/Reveal";
-import { ReviewCard } from "@/components/ReviewCard";
+import { ReviewsShowcase } from "@/components/ReviewsShowcase";
+import { ClickSpark } from "@/components/ClickSpark";
+import { AccordionGallery } from "@/components/AccordionGallery";
 import { TourvisorModule } from "@/components/TourvisorModule";
 import { destinations } from "@/data/destinations";
 import { reviews } from "@/data/reviews";
@@ -38,9 +40,7 @@ export default function HomePage() {
               Посоветуем отель, поможем с документами и будем на связи всю поездку.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
-              <Link href="/contacts#lead" className="button-primary">
-                Подобрать тур <span aria-hidden="true">→</span>
-              </Link>
+              <ClickSpark><Link href="/contacts#lead" className="button-primary">Подобрать тур <span aria-hidden="true">→</span></Link></ClickSpark>
               <a href={site.phones[0].href} className="link-underline text-base font-bold text-white">
                 {site.phones[0].label}
               </a>
@@ -102,7 +102,7 @@ export default function HomePage() {
               <div>
                 <p className="eyebrow">Идеи для следующего отпуска</p>
                 <h2 className="mt-3 max-w-2xl text-4xl font-extrabold tracking-[-0.05em] text-navy-950 text-balance sm:text-5xl">
-                  Направления, в которые возвращаются
+                  Популярные направления
                 </h2>
               </div>
               <Link href="/destinations" className="link-underline font-extrabold text-navy-950">
@@ -110,26 +110,7 @@ export default function HomePage() {
               </Link>
             </div>
           </Reveal>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-            {popularDestinations.map((destination, index) => (
-              <Reveal key={destination.slug} delay={index * 65}>
-                <Link href={`/destinations/${destination.slug}`} className="destination-slice group">
-                  <Image
-                    src={destination.image}
-                    alt={`${destination.name} — ${destination.tagline}`}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 20vw"
-                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                  />
-                  <span className="absolute inset-0 bg-gradient-to-t from-navy-950/80 via-navy-950/10 to-transparent" />
-                  <span className="absolute inset-x-0 bottom-0 p-5 text-white">
-                    <span className="block text-2xl font-extrabold tracking-[-0.04em]">{destination.name}</span>
-                    <span className="mt-1 block text-sm text-white/75">{destination.tagline}</span>
-                  </span>
-                </Link>
-              </Reveal>
-            ))}
-          </div>
+          <Reveal className="mt-8"><AccordionGallery items={popularDestinations} defaultIndex={2} /></Reveal>
           <Reveal className="mt-14">
             <PhotoMosaic />
           </Reveal>
@@ -202,13 +183,9 @@ export default function HomePage() {
               <Link href="/reviews" className="link-underline font-extrabold text-navy-950">Все отзывы <span aria-hidden="true">→</span></Link>
             </div>
           </Reveal>
-          <div className="mt-10 grid gap-5 md:grid-cols-3">
-            {reviews.slice(0, 3).map((review, index) => (
-              <Reveal key={review.name} delay={index * 75}>
-                <ReviewCard review={review} />
-              </Reveal>
-            ))}
-          </div>
+          <Reveal delay={100}>
+            <div className="mt-10"><ReviewsShowcase reviews={reviews} /></div>
+          </Reveal>
         </div>
       </section>
 
@@ -228,7 +205,7 @@ export default function HomePage() {
             <div className="mt-7 flex flex-wrap gap-x-8 gap-y-4 border-t border-navy-950/20 pt-6">
               <a href={site.phones[0].href} className="link-underline font-extrabold text-navy-950">{site.phones[0].label}</a>
               <a href={site.social.whatsapp} target="_blank" rel="noopener noreferrer" className="link-underline font-extrabold text-navy-950">Написать в WhatsApp <span aria-hidden="true">→</span></a>
-              <Link href="/contacts#lead" className="button-dark">Оставить заявку <span aria-hidden="true">→</span></Link>
+              <ClickSpark><Link href="/contacts#lead" className="button-dark">Оставить заявку <span aria-hidden="true">→</span></Link></ClickSpark>
             </div>
           </Reveal>
         </div>

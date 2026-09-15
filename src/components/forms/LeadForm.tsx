@@ -160,20 +160,19 @@ export function LeadForm({ defaultCountry }: { defaultCountry?: string }) {
         <label htmlFor="lead-country" className="mb-1.5 block text-sm font-semibold text-navy-950">
           Страна *
         </label>
-        <select
+        <input
           id="lead-country"
           value={form.country}
           onChange={(e) => set("country", e.target.value)}
+          list="lead-country-options"
+          placeholder="Например, Турция или Япония"
           className={inputCls(errors.country)}
-        >
-          <option value="">Выберите страну</option>
+        />
+        <datalist id="lead-country-options">
           {destinations.map((d) => (
-            <option key={d.slug} value={d.name}>
-              {d.name}
-            </option>
+            <option key={d.slug} value={d.name} />
           ))}
-          <option value="Другая страна">Другая страна</option>
-        </select>
+        </datalist>
         {errors.country && <p className="mt-1 text-xs text-red-500">{errors.country}</p>}
       </div>
 
