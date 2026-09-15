@@ -30,7 +30,7 @@ export function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 bg-white/95 backdrop-blur transition-shadow ${
+      className={`sticky top-0 z-50 border-b border-navy-950/10 bg-white/95 backdrop-blur transition-[box-shadow] ${
         scrolled ? "shadow-[0_1px_0_rgb(0_9_66/0.08),0_8px_24px_-12px_rgb(0_9_66/0.18)]" : ""
       }`}
     >
@@ -56,8 +56,8 @@ export function Header() {
                 href={item.href}
                 className={`rounded-lg px-3 py-2 text-[15px] font-semibold transition-colors ${
                   active
-                    ? "text-navy-950 bg-azure-100"
-                    : "text-navy-800/80 hover:text-navy-950 hover:bg-azure-50"
+                    ? "border-b-2 border-gold-400 text-navy-950"
+                    : "text-navy-800/80 hover:text-navy-950"
                 }`}
               >
                 {item.label}
@@ -75,7 +75,7 @@ export function Header() {
           </a>
           <Link
             href="/contacts#lead"
-            className="rounded-full bg-gold-400 px-5 py-2.5 text-[15px] font-bold text-navy-950 shadow-sm transition-all hover:bg-gold-300 active:translate-y-px"
+            className="rounded-xl bg-gold-400 px-5 py-2.5 text-[15px] font-bold text-navy-950 shadow-sm transition-[background-color,transform] hover:bg-gold-300 active:scale-[0.98]"
           >
             Подобрать тур
           </Link>
@@ -87,7 +87,7 @@ export function Header() {
           onClick={() => setOpen(!open)}
           aria-expanded={open}
           aria-label={open ? "Закрыть меню" : "Открыть меню"}
-          className="flex h-11 w-11 items-center justify-center rounded-lg text-navy-950 hover:bg-azure-50 lg:hidden"
+          className="flex h-11 w-11 items-center justify-center rounded-xl text-navy-950 hover:bg-azure-50 lg:hidden"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             {open ? (
@@ -113,8 +113,8 @@ export function Header() {
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className={`block rounded-lg px-3 py-3 text-base font-semibold ${
-                  active ? "bg-azure-100 text-navy-950" : "text-navy-800"
+                className={`block border-l-2 px-3 py-3 text-base font-semibold ${
+                  active ? "border-gold-400 bg-azure-50 text-navy-950" : "border-transparent text-navy-800"
                 }`}
               >
                 {item.label}
@@ -128,7 +128,7 @@ export function Header() {
             <Link
               href="/contacts#lead"
               onClick={() => setOpen(false)}
-              className="rounded-full bg-gold-400 px-5 py-3 text-center text-base font-bold text-navy-950"
+              className="rounded-xl bg-gold-400 px-5 py-3 text-center text-base font-bold text-navy-950"
             >
               Подобрать тур
             </Link>

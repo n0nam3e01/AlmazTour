@@ -13,14 +13,11 @@ export function CountUp({
   duration?: number;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const [display, setDisplay] = useState<number | string>(typeof value === "number" ? 0 : value);
+  const [display, setDisplay] = useState(0);
   const started = useRef(false);
 
   useEffect(() => {
-    if (typeof value === "string") {
-      setDisplay(value);
-      return;
-    }
+    if (typeof value === "string") return;
 
     const el = ref.current;
     if (!el) return;
@@ -55,7 +52,7 @@ export function CountUp({
 
   return (
     <span ref={ref}>
-      {typeof display === "number" ? display.toLocaleString("ru-RU") : display}
+      {typeof value === "number" ? display.toLocaleString("ru-RU") : value}
       {suffix}
     </span>
   );

@@ -42,14 +42,17 @@ export function SubscribeForm() {
         </label>
         <input
           id="footer-email"
+          name="email"
           type="email"
+          autoComplete="email"
+          spellCheck={false}
           required
           value={email}
           onChange={(e) => {
             setEmail(e.target.value);
             if (status === "error") setStatus("idle");
           }}
-          placeholder="ваш e-mail"
+          placeholder="name@example.com…"
           className="w-full min-w-0 rounded-full border border-white/20 bg-white/10 px-4 py-2.5 text-sm text-white placeholder:text-white/40 focus:border-gold-400 focus:outline-none"
         />
         <button
@@ -61,7 +64,7 @@ export function SubscribeForm() {
         </button>
       </div>
       {status === "error" && (
-        <p className="mt-2 text-xs text-gold-300">
+        <p className="mt-2 text-xs text-gold-300" role="status" aria-live="polite">
           Проверьте адрес почты и попробуйте ещё раз.
         </p>
       )}

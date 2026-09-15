@@ -1,18 +1,10 @@
-import type { Metadata } from "next";
-import { Manrope } from "next/font/google";
+import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { WhatsAppFloat } from "@/components/WhatsAppFloat";
 import { site } from "@/data/site";
-
-/* Manrope — современный гротеск с полной поддержкой кириллицы */
-const manrope = Manrope({
-  variable: "--font-manrope",
-  subsets: ["latin", "cyrillic"],
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -44,17 +36,22 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
+export const viewport: Viewport = {
+  themeColor: "#000942",
+};
+
 /* Разметка schema.org: турагентство с адресом, графиком и контактами */
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "TravelAgency",
   name: "Almaz Tour",
   alternateName: "Алмаз Тур",
+  foundingDate: String(site.foundedYear),
   slogan: site.slogan,
   url: site.url,
   logo: `${site.url}/images/logo.png`,
   email: site.email,
-  telephone: "+77759089048",
+  telephone: site.phones[0].href.replace("tel:", ""),
   address: {
     "@type": "PostalAddress",
     addressLocality: "Астана",
@@ -88,11 +85,17 @@ export default function RootLayout({
     <html
       lang="ru"
       data-scroll-behavior="smooth"
-      className={`${manrope.variable} h-full antialiased`}
+      className="h-full antialiased"
     >
       <body className="min-h-full flex flex-col">
+        <a
+          href="#content"
+          className="sr-only absolute left-4 top-4 z-[100] bg-gold-400 px-4 py-3 font-bold text-navy-950 focus:not-sr-only"
+        >
+          Перейти к содержанию
+        </a>
         <Header />
-        <main className="flex-1">{children}</main>
+        <main id="content" className="flex-1">{children}</main>
         <Footer />
         <WhatsAppFloat />
         <Script

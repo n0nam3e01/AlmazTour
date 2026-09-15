@@ -1,115 +1,59 @@
 import Image from "next/image";
 import Link from "next/link";
-import { TourvisorModule } from "@/components/TourvisorModule";
-import { DestinationCard } from "@/components/DestinationCard";
 import { PhotoMosaic } from "@/components/PhotoMosaic";
-import { ReviewCard } from "@/components/ReviewCard";
 import { Reveal } from "@/components/Reveal";
-import { CountUp } from "@/components/CountUp";
+import { ReviewCard } from "@/components/ReviewCard";
+import { TourvisorModule } from "@/components/TourvisorModule";
 import { destinations } from "@/data/destinations";
 import { reviews } from "@/data/reviews";
 import { site } from "@/data/site";
 
-/* Преимущества — с текущего сайта, тексты причёсаны */
-const benefits = [
-  {
-    title: "В любую точку мира",
-    text: "Турция и Египет, Мальдивы и Сингапур, Европа и экзотика. Подберём страну под сезон, бюджет и настроение.",
-    icon: (
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.8" />
-        <path d="M3.5 12h17M12 3a14.5 14.5 0 0 1 0 18M12 3a14.5 14.5 0 0 0 0 18" stroke="currentColor" strokeWidth="1.8" />
-      </svg>
-    ),
-  },
-  {
-    title: "Всё включено",
-    text: "Авиабилеты, отель, трансфер, страховка. Берём на себя все детали поездки — вам остаётся собрать чемодан.",
-    icon: (
-      <Image
-        src="/images/icons/plane-for-almaz-tour.png"
-        alt=""
-        width={26}
-        height={26}
-        aria-hidden="true"
-        className="h-[26px] w-[26px] rounded-sm"
-      />
-    ),
-  },
-  {
-    title: "Отели знаем лично",
-    text: "Мы сами ездим по курортам и смотрим отели своими глазами. Мы советуем то, что проверили, а не то, что красиво в каталоге.",
-    icon: (
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M4 21V6.5a1.5 1.5 0 0 1 1.5-1.5h9A1.5 1.5 0 0 1 16 6.5V21M16 11h2.5A1.5 1.5 0 0 1 20 12.5V21M2.5 21h19" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M7.5 9h2M7.5 13h2M12.5 9h.01M12.5 13h.01" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-      </svg>
-    ),
-  },
-  {
-    title: "Оздоровительные туры",
-    text: "Организуем лечение и обследования в клиниках Германии, Швейцарии, Израиля и Южной Кореи.",
-    icon: (
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M12 21s-7.5-4.6-9.3-9.6C1.4 7.7 3.5 4.5 6.9 4.5c2 0 3.7 1.1 5.1 3 1.4-1.9 3.1-3 5.1-3 3.4 0 5.5 3.2 4.2 6.9C19.5 16.4 12 21 12 21Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-        <path d="M8 12h2.5l1-2 1.5 4 1-2H17" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    ),
-  },
-];
+const popularDestinations = destinations.slice(0, 5);
 
+/** Главная — редакционный маршрут: поиск → актуальные туры → вдохновение → доверие. */
 export default function HomePage() {
-  /* Девять карточек: три полных ряда на десктопе */
-  const featured = destinations.slice(0, 9);
-
   return (
     <>
-      {/* ===== Хиро: фото, заголовок и поиск туров ===== */}
-      <section className="relative bg-navy-950">
-        <div className="absolute inset-0">
+      <section className="travel-hero">
+        <div className="absolute inset-0" aria-hidden="true">
           <Image
-            src="/images/destinations/thailand.jpg"
+            src="/images/destinations/maldives.jpg"
             alt=""
             fill
-            priority
+            loading="eager"
+            fetchPriority="high"
             sizes="100vw"
-            className="object-cover opacity-45"
+            className="object-cover object-[62%_center]"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-navy-950/95 via-navy-950/70 to-navy-950/30" />
+          <div className="hero-shade absolute inset-0" />
         </div>
-
-        <div className="relative mx-auto max-w-7xl px-4 pb-10 pt-16 sm:px-6 lg:px-8 lg:pb-14 lg:pt-24">
-          <div className="max-w-2xl">
-            <h1 className="text-4xl font-extrabold leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-6xl">
-              Влюбляем
-              <br />в путешествия
+        <div className="relative mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+          <div className="hero-copy">
+            <p className="eyebrow hero-eyebrow">Almaz Tour · путешествуем с вами с {site.foundedYear} года</p>
+            <h1 className="hero-title">
+              {site.slogan}
             </h1>
-            <p className="mt-5 max-w-lg text-lg leading-relaxed text-white/85">
-              Туры из Астаны в любую точку мира: подберём отель, оформим
-              документы и будем на связи всю поездку.
+            <p className="mt-6 max-w-lg text-base leading-7 text-white/90 sm:text-lg">
+              Подберём тур из любой точки мира в любую точку мира.
+              Посоветуем отель, поможем с документами и будем на связи всю поездку.
             </p>
-            <div className="mt-7 flex flex-wrap items-center gap-4">
-              <Link
-                href="/contacts#lead"
-                className="rounded-full bg-gold-400 px-7 py-3.5 text-base font-bold text-navy-950 shadow-lg shadow-gold-400/25 transition-all hover:bg-gold-300 active:translate-y-px"
-              >
-                Подобрать тур
+            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+              <Link href="/contacts#lead" className="button-primary">
+                Подобрать тур <span aria-hidden="true">→</span>
               </Link>
-              <a
-                href={site.phones[0].href}
-                className="text-lg font-bold text-white transition-colors hover:text-gold-300"
-              >
+              <a href={site.phones[0].href} className="link-underline text-base font-bold text-white">
                 {site.phones[0].label}
               </a>
             </div>
           </div>
+        </div>
 
-          {/* Поиск туров Tourvisor в белой карточке.
-              На узких экранах виджет шире карточки — даём ему прокрутку */}
-          <div className="mt-12 rounded-2xl bg-white p-3 shadow-2xl sm:p-6">
-            <h2 className="px-1 pb-3 text-lg font-extrabold text-navy-950">
-              Поиск туров по всем туроператорам
-            </h2>
+        <div className="relative z-20 mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-12 lg:px-8">
+          <div className="search-panel rounded-3xl border border-white/60 bg-white p-4 sm:p-6">
+            <div className="mb-3 flex items-center justify-between gap-4 px-1">
+              <p className="text-sm font-extrabold text-navy-950">Найдите свой тур</p>
+              <p className="hidden text-xs font-bold uppercase tracking-[0.14em] text-navy-500 sm:block">Все туроператоры в одном поиске</p>
+            </div>
             <div className="overflow-x-auto">
               <TourvisorModule
                 type="tv-search-form"
@@ -122,28 +66,26 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ===== Горящие туры ===== */}
-      <section className="bg-azure-50 py-16 lg:py-20">
+      <section className="border-y border-navy-950/10 bg-navy-950 py-16 text-white sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Reveal>
-            <div className="flex flex-wrap items-end justify-between gap-4">
+            <div className="flex flex-wrap items-end justify-between gap-6">
               <div>
-                <p className="text-sm font-bold uppercase tracking-[0.14em] text-azure-600">
-                  Успейте забронировать
-                </p>
-                <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-navy-950 sm:text-4xl">
-                  Горящие туры из Астаны
+                <p className="eyebrow text-gold-400">Поймать удачный момент</p>
+                <h2 className="mt-3 text-4xl font-extrabold tracking-[-0.05em] text-white text-balance sm:text-5xl">
+                  Горящие туры
                 </h2>
+                <p className="mt-4 max-w-xl leading-7 text-white/70">
+                  Здесь можно посмотреть актуальные цены и даты вылета.
+                  Если ничего не приглянулось, напишите нам: предложим другие варианты.
+                </p>
               </div>
-              <Link
-                href="/hot-tours"
-                className="rounded-full border-2 border-navy-950 px-6 py-3 text-sm font-bold text-navy-950 transition-colors hover:bg-navy-950 hover:text-white"
-              >
-                Все горящие туры
+              <Link href="/hot-tours" className="link-underline font-extrabold text-gold-400">
+                Смотреть все туры <span aria-hidden="true">→</span>
               </Link>
             </div>
           </Reveal>
-          <Reveal delay={120} className="mt-8">
+          <Reveal delay={90} className="mt-10 rounded-3xl bg-white p-4 shadow-[var(--shadow-card)] sm:p-6">
             <TourvisorModule
               type="tv-hot-tours"
               moduleId={process.env.NEXT_PUBLIC_TV_HOT_HOME_ID}
@@ -153,200 +95,140 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ===== Популярные направления ===== */}
-      <section className="py-16 lg:py-20">
+      <section className="py-18 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Reveal>
-            <h2 className="text-3xl font-extrabold tracking-tight text-navy-950 sm:text-4xl">
-              Куда поедем?
-            </h2>
-            <p className="mt-3 max-w-xl text-navy-800/70">
-              Направления, которые выбирают чаще всего. Возим и за их пределы —
-              скажите, куда хочется, и подберём тур в любую точку мира.
-            </p>
+            <div className="grid gap-6 border-b border-navy-950/15 pb-8 lg:grid-cols-[1fr_auto] lg:items-end">
+              <div>
+                <p className="eyebrow">Идеи для следующего отпуска</p>
+                <h2 className="mt-3 max-w-2xl text-4xl font-extrabold tracking-[-0.05em] text-navy-950 text-balance sm:text-5xl">
+                  Направления, в которые возвращаются
+                </h2>
+              </div>
+              <Link href="/destinations" className="link-underline font-extrabold text-navy-950">
+                Все направления <span aria-hidden="true">→</span>
+              </Link>
+            </div>
           </Reveal>
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {featured.map((d, i) => (
-              <Reveal key={d.slug} delay={i * 70}>
-                <DestinationCard destination={d} />
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            {popularDestinations.map((destination, index) => (
+              <Reveal key={destination.slug} delay={index * 65}>
+                <Link href={`/destinations/${destination.slug}`} className="destination-slice group">
+                  <Image
+                    src={destination.image}
+                    alt={`${destination.name} — ${destination.tagline}`}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 20vw"
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                  />
+                  <span className="absolute inset-0 bg-gradient-to-t from-navy-950/80 via-navy-950/10 to-transparent" />
+                  <span className="absolute inset-x-0 bottom-0 p-5 text-white">
+                    <span className="block text-2xl font-extrabold tracking-[-0.04em]">{destination.name}</span>
+                    <span className="mt-1 block text-sm text-white/75">{destination.tagline}</span>
+                  </span>
+                </Link>
               </Reveal>
             ))}
           </div>
-          <Reveal className="mt-10 text-center">
-            <Link
-              href="/destinations"
-              className="inline-block rounded-full bg-navy-950 px-8 py-3.5 text-base font-bold text-white transition-all hover:bg-navy-800 active:translate-y-px"
-            >
-              Смотреть все направления
-            </Link>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ===== Почему Almaz Tour ===== */}
-      <section className="border-y border-navy-50 bg-white py-16 lg:py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-12 lg:grid-cols-[1fr_1.4fr] lg:gap-16">
-            <Reveal>
-              <h2 className="text-3xl font-extrabold tracking-tight text-navy-950 sm:text-4xl">
-                Почему нам доверяют
-              </h2>
-              <p className="mt-4 leading-relaxed text-navy-800/70">
-                За плечами Almaz Tour восемь лет работы и сотни собранных поездок.
-                Алия лично объезжает курорты и отбирает отели, поэтому советует
-                не по картинке из каталога, а по тому, что видела сама.
-              </p>
-              <p className="mt-4 leading-relaxed text-navy-800/70">
-                Вашей поездкой занимается живой человек и остаётся на связи от
-                первого звонка до возвращения домой.
-              </p>
-              <Link
-                href="/reviews"
-                className="mt-6 inline-flex items-center gap-1.5 font-bold text-azure-600 transition-colors hover:text-navy-950"
-              >
-                Что говорят клиенты
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M3 8h10m0 0L9 4m4 4l-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </Link>
-            </Reveal>
-            <div className="grid gap-6 sm:grid-cols-2">
-              {benefits.map((b, i) => (
-                <Reveal key={b.title} delay={i * 80}>
-                  <div className="flex h-full flex-col rounded-2xl bg-azure-50 p-6 transition-colors hover:bg-azure-100">
-                    <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-navy-950 text-gold-400">
-                      {b.icon}
-                    </span>
-                    <h3 className="mt-4 text-lg font-extrabold text-navy-950">{b.title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-navy-800/70">{b.text}</p>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== Счётчики ===== */}
-      <section className="bg-navy-950 py-14 lg:py-16">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-x-6 gap-y-10 px-4 sm:px-6 lg:grid-cols-4 lg:px-8">
-          {site.counters.map((c) => (
-            <div key={c.label} className="text-center">
-              <p className="text-4xl font-extrabold tracking-tight text-gold-400 lg:text-5xl">
-                <CountUp value={c.value} suffix={"suffix" in c ? (c as { suffix: string }).suffix : ""} />
-              </p>
-              <p className="mt-2 text-sm text-white/70">{c.label}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ===== Мозаика курортов: море, солнце и пляж без лишних слов ===== */}
-      <section className="py-16 lg:py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <Reveal>
-            <h2 className="text-3xl font-extrabold tracking-tight text-navy-950 sm:text-4xl">
-              Туда, где тепло
-            </h2>
-            <p className="mt-3 max-w-xl text-navy-800/70">
-              Эти курорты наши туристы вспоминают чаще всего. Нажмите на любой,
-              чтобы посмотреть подробности.
-            </p>
-          </Reveal>
-          <Reveal className="mt-10">
+          <Reveal className="mt-14">
             <PhotoMosaic />
           </Reveal>
         </div>
       </section>
 
-      {/* ===== Оздоровительные туры ===== */}
-      <section className="py-16 lg:py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section className="overflow-hidden bg-[#f7f5ef] py-18 sm:py-24">
+        <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.88fr_1.12fr] lg:items-center lg:gap-16 lg:px-8">
           <Reveal>
-            <div className="overflow-hidden rounded-3xl bg-gradient-to-br from-azure-100 via-azure-50 to-white p-8 sm:p-12 lg:p-16">
-              <div className="max-w-2xl">
-                <h2 className="text-3xl font-extrabold tracking-tight text-navy-950 sm:text-4xl">
-                  Оздоровительные туры
-                </h2>
-                <p className="mt-4 text-lg leading-relaxed text-navy-800/75">
-                  Помогаем попасть на лечение и обследование к специалистам
-                  ведущих клиник Германии, Швейцарии, Израиля и Южной Кореи.
-                  Организуем всё: от перевода документов до сопровождения.
-                </p>
-                <div className="mt-6 flex flex-wrap gap-2">
-                  {["Германия", "Швейцария", "Израиль", "Южная Корея"].map((c) => (
-                    <span
-                      key={c}
-                      className="rounded-full bg-white px-4 py-1.5 text-sm font-semibold text-navy-950 shadow-sm"
-                    >
-                      {c}
-                    </span>
-                  ))}
+            <p className="eyebrow">Наша команда</p>
+            <h2 className="mt-3 max-w-md text-4xl font-extrabold tracking-[-0.05em] text-navy-950 text-balance sm:text-5xl">
+              Сами путешествуем. Делимся опытом.
+            </h2>
+            <p className="mt-6 max-w-md text-base leading-7 text-navy-800/75 sm:text-lg">
+              С 2018 года наша команда помогает туристам выбирать отдых по всему миру.
+              Мы сами бываем на курортах, осматриваем отели и проверяем, что ждёт
+              гостей на месте: какой пляж рядом, как кормят и удобно ли с детьми.
+            </p>
+            <p className="mt-4 max-w-md text-base leading-7 text-navy-800/75 sm:text-lg">
+              Расскажем о плюсах и особенностях каждого варианта, чтобы вы могли
+              выбрать подходящий. И останемся на связи, когда вы уже будете в поездке.
+            </p>
+            <Link href="/contacts#lead" className="link-underline mt-8 inline-flex font-extrabold text-navy-950">
+              Обсудить свой отдых <span aria-hidden="true">→</span>
+            </Link>
+          </Reveal>
+          <Reveal delay={100}>
+            <div className="grid gap-6 sm:grid-cols-[1.2fr_0.8fr]">
+              <div className="relative min-h-[390px] overflow-hidden rounded-3xl shadow-[var(--shadow-card)] sm:min-h-[480px]">
+                <Image
+                  src="/images/destinations/greece.jpg"
+                  alt="Средиземноморское побережье — один из маршрутов Almaz Tour"
+                  fill
+                  sizes="(max-width: 640px) 100vw, 45vw"
+                  className="object-cover"
+                />
+                <div className="absolute inset-x-0 bottom-0 bg-navy-950/80 p-5 text-white">
+                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-gold-400">Опыт команды</p>
+                  <p className="mt-2 text-lg font-extrabold">Сами бываем там, куда советуем поехать</p>
                 </div>
-                <Link
-                  href="/health-tours"
-                  className="mt-8 inline-block rounded-full bg-navy-950 px-7 py-3.5 text-base font-bold text-white transition-all hover:bg-navy-800 active:translate-y-px"
-                >
-                  Узнать подробнее
-                </Link>
+              </div>
+              <div className="flex flex-col divide-y divide-navy-950/15 border-y border-navy-950/15">
+                <div className="flex-1 py-8">
+                  <p className="text-sm font-semibold text-navy-600">Работаем с</p>
+                  <p className="mt-2 text-5xl font-semibold tracking-tight text-navy-950">{site.foundedYear}</p>
+                  <p className="mt-3 text-sm leading-6 text-navy-800/70">года в Астане</p>
+                </div>
+                <div className="flex-1 py-8">
+                  <p className="text-2xl font-bold tracking-tight">Весь мир</p>
+                  <p className="mt-3 text-sm leading-6 text-navy-800/70">Подбираем страну и отель под ваш бюджет и время отпуска.</p>
+                </div>
+                <div className="py-8">
+                  <p className="text-2xl font-bold tracking-tight">На связи</p>
+                  <p className="mt-3 text-sm leading-6 text-navy-800/70">Помогаем с вопросами до вылета и во время отдыха.</p>
+                </div>
               </div>
             </div>
           </Reveal>
         </div>
       </section>
 
-      {/* ===== Отзывы ===== */}
-      <section className="bg-azure-50 py-16 lg:py-20">
+      <section className="py-18 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Reveal>
-            <div className="flex flex-wrap items-end justify-between gap-4">
-              <h2 className="text-3xl font-extrabold tracking-tight text-navy-950 sm:text-4xl">
-                Что говорят клиенты
-              </h2>
-              <Link
-                href="/reviews"
-                className="font-bold text-azure-600 transition-colors hover:text-navy-950"
-              >
-                Все отзывы →
-              </Link>
+            <div className="flex flex-wrap items-end justify-between gap-5">
+              <div>
+                <p className="eyebrow">Настоящие впечатления</p>
+                <h2 className="mt-3 text-4xl font-extrabold tracking-[-0.05em] text-navy-950 sm:text-5xl">Что говорят наши туристы</h2>
+              </div>
+              <Link href="/reviews" className="link-underline font-extrabold text-navy-950">Все отзывы <span aria-hidden="true">→</span></Link>
             </div>
           </Reveal>
-          <div className="mt-10 grid gap-6 md:grid-cols-3">
-            {reviews.slice(0, 3).map((r, i) => (
-              <Reveal key={r.name} delay={i * 90}>
-                <ReviewCard review={r} />
+          <div className="mt-10 grid gap-5 md:grid-cols-3">
+            {reviews.slice(0, 3).map((review, index) => (
+              <Reveal key={review.name} delay={index * 75}>
+                <ReviewCard review={review} />
               </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ===== CTA ===== */}
-      <section className="py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section className="bg-gold-400 py-16 sm:py-20">
+        <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-[0.95fr_1.05fr] lg:items-end lg:px-8">
           <Reveal>
-            <div className="rounded-3xl bg-navy-950 px-8 py-12 text-center sm:px-12 lg:py-16">
-              <h2 className="mx-auto max-w-2xl text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-                Расскажите, какой отдых вам нужен
-              </h2>
-              <p className="mx-auto mt-4 max-w-xl text-white/75">
-                Заполните короткую форму — менеджер перезвонит и предложит
-                несколько вариантов под ваш бюджет.
-              </p>
-              <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-                <Link
-                  href="/contacts#lead"
-                  className="rounded-full bg-gold-400 px-8 py-4 text-base font-bold text-navy-950 shadow-lg shadow-gold-400/20 transition-all hover:bg-gold-300 active:translate-y-px"
-                >
-                  Подобрать тур
-                </Link>
-                <a
-                  href={site.phones[0].href}
-                  className="text-lg font-bold text-white transition-colors hover:text-gold-300"
-                >
-                  {site.phones[0].label}
-                </a>
-              </div>
+            <p className="eyebrow text-navy-950/65">Консультация</p>
+            <h2 className="mt-3 max-w-lg text-4xl font-extrabold leading-[0.98] tracking-[-0.06em] text-navy-950 text-balance sm:text-5xl">
+              Обсудим ваше следующее путешествие?
+            </h2>
+          </Reveal>
+          <Reveal delay={90}>
+            <p className="max-w-xl text-lg leading-7 text-navy-950/80">
+              Расскажите, куда хочется поехать и сколько планируете потратить.
+              Пришлём несколько вариантов и объясним, что входит в стоимость.
+            </p>
+            <div className="mt-7 flex flex-wrap gap-x-8 gap-y-4 border-t border-navy-950/20 pt-6">
+              <a href={site.phones[0].href} className="link-underline font-extrabold text-navy-950">{site.phones[0].label}</a>
+              <a href={site.social.whatsapp} target="_blank" rel="noopener noreferrer" className="link-underline font-extrabold text-navy-950">Написать в WhatsApp <span aria-hidden="true">→</span></a>
+              <Link href="/contacts#lead" className="button-dark">Оставить заявку <span aria-hidden="true">→</span></Link>
             </div>
           </Reveal>
         </div>

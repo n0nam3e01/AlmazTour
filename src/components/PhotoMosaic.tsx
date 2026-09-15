@@ -54,7 +54,7 @@ export function PhotoMosaic() {
         <Link
           key={tile.slug}
           href={`/destinations/${tile.slug}`}
-          className={`group relative overflow-hidden rounded-2xl ${tile.className}`}
+          className={`group relative overflow-hidden rounded-2xl shadow-[var(--shadow-card)] ${tile.className}`}
         >
           <Image
             src={`/images/destinations/${tile.slug}.jpg`}
