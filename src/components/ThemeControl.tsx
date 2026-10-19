@@ -1,9 +1,10 @@
 "use client";
-import { useEffect, useRef, useSyncExternalStore } from "react";
+import { useEffect, useLayoutEffect, useRef, useSyncExternalStore } from "react";
 import { parseThemeMode, resolveTheme, THEME_KEY, type ThemeMode } from "@/lib/theme";
 import { useLocale } from "@/components/LocaleProvider";
 import { uiCopy } from "@/data/ui-copy";
 const EVENT = "almaz-theme-change";
+let lastAppliedMode: ThemeMode | null = null;
 const snapshot = () => parseThemeMode(document.documentElement.dataset.themeMode);
 const serverSnapshot = (): ThemeMode => "system";
 function subscribe(listener: () => void) {
@@ -11,6 +12,7 @@ function subscribe(listener: () => void) {
   return () => window.removeEventListener(EVENT, listener);
 }
 function apply(mode: ThemeMode) {
+  lastAppliedMode = mode;
   const root = document.documentElement;
   root.dataset.themeMode = mode;
   root.dataset.theme = resolveTheme(mode, window.matchMedia("(prefers-color-scheme: dark)").matches);
@@ -18,6 +20,15 @@ function apply(mode: ThemeMode) {
   window.dispatchEvent(new Event(EVENT));
 }
 export function ThemeProvider({ children }: {children: React.ReactNode}) {
+  const locale = useLocale();
+  useLayoutEffect(() => {
+    let mode = lastAppliedMode ?? snapshot();
+    try {
+      const stored = localStorage.getItem(THEME_KEY);
+      mode = stored === null ? mode : parseThemeMode(stored);
+    } catch { /* The current in-memory preference still survives SPA locale changes. */ }
+    apply(mode);
+  }, [locale]);
   useEffect(() => {
     const media = window.matchMedia("(prefers-color-scheme: dark)");
     const osChange = () => apply(snapshot());
