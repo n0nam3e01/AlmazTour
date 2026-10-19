@@ -31,11 +31,13 @@ export function ClickSpark({ children, className = "", sparkColor = "#ffcc00" }:
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
     const onClick = (event: MouseEvent) => {
+      if (!event.detail || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
       const rect = parent.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
       const started = performance.now();
       for (let i = 0; i < 7; i += 1) sparks.push({ x, y, angle: (Math.PI * 2 * i) / 7, started });
+      if (!frame) frame = requestAnimationFrame(draw);
     };
     const draw = (time: number) => {
       const rect = parent.getBoundingClientRect();
@@ -54,13 +56,12 @@ export function ClickSpark({ children, className = "", sparkColor = "#ffcc00" }:
         ctx.lineTo(spark.x + Math.cos(spark.angle) * (distance + length), spark.y + Math.sin(spark.angle) * (distance + length));
         ctx.stroke();
       }
-      frame = requestAnimationFrame(draw);
+      frame = sparks.length ? requestAnimationFrame(draw) : 0;
     };
     resize();
     const observer = new ResizeObserver(resize);
     observer.observe(parent);
     parent.addEventListener("click", onClick);
-    frame = requestAnimationFrame(draw);
     return () => { observer.disconnect(); parent.removeEventListener("click", onClick); cancelAnimationFrame(frame); };
   }, [sparkColor]);
 

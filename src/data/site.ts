@@ -9,7 +9,7 @@ export const site = {
   slogan: "Влюбляем в путешествия",
   description:
     "Almaz Tour работает с 2018 года. Подбираем туры из любой точки мира в любую точку мира. Наша команда сама бывает на курортах и помогает выбрать отель под ваш бюджет.",
-  url: "https://almaztour.kz",
+  url: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://almaz-tourkz.vercel.app").origin,
 
   /* Первый номер — рабочий, он показывается в шапке и на кнопках */
   phones: [
