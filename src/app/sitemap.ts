@@ -1,25 +1,13 @@
 import type { MetadataRoute } from "next";
 import { destinations } from "@/data/destinations";
 import { site } from "@/data/site";
-
+import { locales, localizePath } from "@/lib/i18n";
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
-
-  const staticPages: MetadataRoute.Sitemap = [
-    { url: site.url, lastModified: now, changeFrequency: "weekly", priority: 1 },
-    { url: `${site.url}/hot-tours`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
-    { url: `${site.url}/destinations`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${site.url}/health-tours`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${site.url}/reviews`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${site.url}/contacts`, lastModified: now, changeFrequency: "yearly", priority: 0.6 },
-  ];
-
-  const destinationPages: MetadataRoute.Sitemap = destinations.map((d) => ({
-    url: `${site.url}/destinations/${d.slug}`,
-    lastModified: now,
-    changeFrequency: "monthly",
-    priority: 0.7,
-  }));
-
-  return [...staticPages, ...destinationPages];
+ const paths = ["/", "/hot-tours", "/destinations", "/health-tours", "/reviews", "/contacts", ...destinations.map(d=>"/destinations/"+d.slug)];
+ return paths.flatMap(path=>locales.map(locale=>({
+  url:site.url+localizePath(path,locale),
+  changeFrequency: path==="/hot-tours" ? "daily" as const : "monthly" as const,
+  priority:path==="/" ? 1 : 0.7,
+  alternates:{languages:{ru:site.url+localizePath(path,"ru"),kk:site.url+localizePath(path,"kk"),"x-default":site.url+localizePath(path,"ru")}},
+ })));
 }

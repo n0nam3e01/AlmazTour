@@ -1,101 +1,39 @@
 "use client";
 
-import { useState } from "react";
+import { useId } from "react";
+import { useLocale } from "@/components/LocaleProvider";
+import { formCopy } from "@/data/form-copy";
+import { FORM_LIMITS, validateReview } from "@/lib/leads";
+import { Field, SubmissionNotice, useFormDraft, useFormSubmission } from "./FormSupport";
 
-/** Форма «Оставить отзыв» */
 export function ReviewForm() {
-  const [name, setName] = useState("");
-  const [text, setText] = useState("");
-  const [errors, setErrors] = useState<{ name?: string; text?: string }>({});
-  const [status, setStatus] = useState<"idle" | "sending" | "done" | "fail">("idle");
+  const locale = useLocale();
+  const copy = formCopy[locale];
+  const id = useId();
+  const { form, update, clear } = useFormDraft("review", { name: "", text: "" });
+  const { status, errors, submit, edited } = useFormSubmission("review");
 
-  async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const next: typeof errors = {};
-    if (name.trim().length < 2) next.name = "Представьтесь, пожалуйста";
-    if (text.trim().length < 10) next.text = "Расскажите чуть подробнее — хотя бы пару предложений";
-    setErrors(next);
-    if (Object.keys(next).length > 0) return;
+  if (status === "done") return <p className="form-success surface rounded-2xl p-6" role="status" aria-live="polite">{copy.reviewSuccess}</p>;
 
-    setStatus("sending");
-    try {
-      const res = await fetch("/api/review", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, text }),
-      });
-      setStatus(res.ok ? "done" : "fail");
-    } catch {
-      setStatus("fail");
-    }
-  }
-
-  if (status === "done") {
-    return (
-      <div className="rounded-2xl bg-azure-50 p-8 text-center">
-        <p className="text-xl font-extrabold text-navy-950">Спасибо за отзыв!</p>
-        <p className="mt-2 text-navy-800/75">
-          Мы прочитаем его и опубликуем на сайте после проверки.
-        </p>
-      </div>
-    );
-  }
-
-  return (
-    <form onSubmit={onSubmit} noValidate className="grid gap-4">
+  return <form onSubmit={event => void submit(event, { ...form, locale }, validateReview, clear)} noValidate aria-busy={status === "sending"} className="grid gap-4">
+    <fieldset disabled={status === "sending"} className="grid min-w-0 gap-4">
+      <Field id={`${id}-name`} label={`${copy.name} *`} error={errors.name ? copy.errors.name : undefined}>
+        <input id={`${id}-name`} name="name" autoComplete="name" required maxLength={FORM_LIMITS.name} value={form.name}
+          onChange={event => { update({ name: event.target.value }); edited("name"); }} placeholder={copy.namePlaceholder}
+          className="field w-full" aria-invalid={!!errors.name} aria-describedby={errors.name ? `${id}-name-error` : undefined} />
+      </Field>
+      <Field id={`${id}-text`} label={`${copy.text} *`} error={errors.text ? copy.errors.text : undefined}>
+        <textarea id={`${id}-text`} name="text" rows={5} required maxLength={FORM_LIMITS.text} value={form.text}
+          onChange={event => { update({ text: event.target.value }); edited("text"); }} placeholder={copy.reviewPlaceholder}
+          className="field w-full" aria-invalid={!!errors.text} aria-describedby={errors.text ? `${id}-text-error` : undefined} />
+      </Field>
       <div>
-        <label htmlFor="review-name" className="mb-1.5 block text-sm font-semibold text-navy-950">
-          Ваше имя *
-        </label>
-        <input
-          id="review-name"
-          value={name}
-          onChange={(e) => {
-            setName(e.target.value);
-            setErrors((er) => ({ ...er, name: undefined }));
-          }}
-          placeholder="Как вас зовут"
-          className={`w-full rounded-xl border bg-white px-4 py-3 text-[15px] text-navy-950 placeholder:text-navy-400/60 focus:outline-none focus:ring-2 focus:ring-azure-400 ${
-            errors.name ? "border-red-400" : "border-navy-100"
-          }`}
-        />
-        {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name}</p>}
+        <button type="submit" disabled={status === "sending"} className="button-primary min-h-12 px-6 py-3 disabled:opacity-60">{status === "sending" ? copy.sending : copy.sendReview}</button>
+        <span role="status" aria-live="polite" className="sr-only">{status === "sending" ? copy.sending : ""}</span>
+        {Object.values(errors).some(Boolean) && <p role="alert" className="form-error mt-2 text-sm">{copy.invalid}</p>}
+        <SubmissionNotice status={status} />
+        <p className="muted mt-3 text-xs">{copy.privacy}</p>
       </div>
-
-      <div>
-        <label htmlFor="review-text" className="mb-1.5 block text-sm font-semibold text-navy-950">
-          Ваш отзыв *
-        </label>
-        <textarea
-          id="review-text"
-          rows={5}
-          value={text}
-          onChange={(e) => {
-            setText(e.target.value);
-            setErrors((er) => ({ ...er, text: undefined }));
-          }}
-          placeholder="Куда ездили, что понравилось, что запомнилось"
-          className={`w-full rounded-xl border bg-white px-4 py-3 text-[15px] text-navy-950 placeholder:text-navy-400/60 focus:outline-none focus:ring-2 focus:ring-azure-400 ${
-            errors.text ? "border-red-400" : "border-navy-100"
-          }`}
-        />
-        {errors.text && <p className="mt-1 text-xs text-red-500">{errors.text}</p>}
-      </div>
-
-      <div>
-        <button
-          type="submit"
-          disabled={status === "sending"}
-          className="rounded-full bg-navy-950 px-8 py-3.5 text-base font-bold text-white transition-all hover:bg-navy-800 active:translate-y-px disabled:opacity-60"
-        >
-          {status === "sending" ? "Отправляем…" : "Отправить отзыв"}
-        </button>
-        {status === "fail" && (
-          <p className="mt-2 text-sm text-red-500">
-            Не получилось отправить. Попробуйте позже или напишите нам в WhatsApp.
-          </p>
-        )}
-      </div>
-    </form>
-  );
+    </fieldset>
+  </form>;
 }
