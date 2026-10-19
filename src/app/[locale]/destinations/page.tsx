@@ -24,7 +24,7 @@ export default async function DestinationsPage({ params }: LocalizedPageProps) {
         <Link href={localizePath("/contacts#lead", locale)} className="button-primary">{common.manager}</Link>
       </PageHeading>
       <section className="section">
-        <div className="container grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="container grid auto-rows-fr gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {getDestinations(locale).map((destination, index) => (
             <Reveal key={destination.slug} delay={(index % 3) * 70}>
               <DestinationCard destination={destination} locale={locale} priority={index < 3} />

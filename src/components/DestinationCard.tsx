@@ -16,7 +16,7 @@ export function DestinationCard({
   return (
     <Link
       href={localizePath(`/destinations/${destination.slug}`, locale)}
-      className="surface group relative flex flex-col overflow-hidden rounded-2xl shadow-[var(--shadow-card)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-card-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-azure-500"
+      className="surface group relative flex h-full flex-col overflow-hidden rounded-2xl shadow-[var(--shadow-card)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-card-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-azure-500"
     >
       <div className="relative aspect-[4/3] overflow-hidden">
         <Image
