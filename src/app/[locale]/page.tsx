@@ -10,7 +10,7 @@ import { ReviewsShowcase } from "@/components/ReviewsShowcase";
 import { TourvisorModule } from "@/components/TourvisorModule";
 import { getDestinations } from "@/data/destinations";
 import { getPageMetadata, pageCopy, type LocalizedPageProps } from "@/data/page-copy";
-import { reviews } from "@/data/reviews";
+import { homeReviewStories, reviews } from "@/data/reviews";
 import { site } from "@/data/site";
 import { hasLocale, localizePath } from "@/lib/i18n";
 import { HeroParallax } from "@/components/HeroParallax";
@@ -26,7 +26,6 @@ export default async function HomePage({ params }: LocalizedPageProps) {
   if (!hasLocale(locale)) notFound();
   const { home: copy, common, contacts } = pageCopy[locale];
   const popularDestinations = getDestinations(locale).slice(0, 5);
-  const featuredDestination = popularDestinations[2];
 
   return (
     <>
@@ -35,7 +34,7 @@ export default async function HomePage({ params }: LocalizedPageProps) {
           <Image src="/images/destinations/maldives.jpg" alt="" fill loading="eager" fetchPriority="high" sizes="100vw" className="object-cover object-[62%_center]" />
           <div className="hero-shade absolute inset-0" />
         </HeroParallax>
-        <div className="container home-hero-layout relative grid gap-10 py-14 sm:py-20 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-center lg:gap-14">
+        <div className="container home-hero-layout relative grid py-14 sm:py-20">
           <div className="home-hero-copy relative z-10 max-w-3xl">
             <p className="home-hero-eyebrow eyebrow text-gold-300">{copy.eyebrow}</p>
             <h1 className="home-hero-title mt-5 max-w-4xl text-balance font-bold text-white">{copy.slogan}</h1>
@@ -45,22 +44,6 @@ export default async function HomePage({ params }: LocalizedPageProps) {
               <a href="#lead" className="inline-flex min-h-12 items-center justify-center rounded-xl border border-white/60 bg-navy-950/60 px-6 py-3 font-bold text-white transition-colors hover:bg-navy-950">{common.manager}</a>
             </div>
           </div>
-          <Link href={localizePath(`/destinations/${featuredDestination.slug}`, locale)} className="hero-featured-card group relative z-10 hidden lg:block" aria-label={`${copy.featuredLabel}: ${featuredDestination.name}`}>
-            <div className="hero-featured-image">
-              <Image src={featuredDestination.image} alt={`${featuredDestination.name} — ${featuredDestination.tagline}`} fill sizes="340px" className="object-cover transition-transform duration-700 group-hover:scale-105" />
-              <div className="hero-featured-topline">
-                <span className="hero-featured-label">{copy.featuredLabel}</span>
-                <span className="hero-featured-index" aria-hidden="true">03 <span>/ 05</span></span>
-              </div>
-              <div className="hero-featured-content">
-                <div>
-                  <p className="hero-featured-name">{featuredDestination.name}</p>
-                  <p className="hero-featured-tagline">{featuredDestination.tagline}</p>
-                </div>
-                <span className="hero-featured-arrow" aria-hidden="true">↗</span>
-              </div>
-            </div>
-          </Link>
         </div>
       </section>
 
@@ -168,15 +151,19 @@ export default async function HomePage({ params }: LocalizedPageProps) {
         </div>
       </section>
 
-      <section className="section surface-soft" aria-labelledby="reviews-title">
+      <section id="reviews" className="section surface-soft home-reviews" aria-labelledby="reviews-title">
         <div className="container">
           <Reveal>
-            <div className="flex flex-wrap items-end justify-between gap-5">
-              <div><p className="eyebrow muted">{copy.reviewsEyebrow}</p><h2 id="reviews-title" className="ink mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">{copy.reviewsTitle}</h2></div>
-              <Link href={localizePath("/reviews", locale)} className="button-secondary">{copy.allReviews}<span aria-hidden="true">→</span></Link>
+            <div className="home-reviews-heading">
+              <div className="home-reviews-intro">
+                <p className="eyebrow muted">{copy.reviewsEyebrow}</p>
+                <h2 id="reviews-title" className="ink mt-3 font-extrabold">{copy.reviewsTitle}</h2>
+                <p className="muted mt-5 leading-7">{copy.reviewsText}</p>
+              </div>
+              <Link href={localizePath("/reviews", locale)} className="button-secondary">{copy.allReviews(reviews.length)}<span aria-hidden="true">→</span></Link>
             </div>
           </Reveal>
-          <Reveal delay={100} className="mt-8"><ReviewsShowcase reviews={reviews} /></Reveal>
+          <Reveal delay={100} className="mt-10"><ReviewsShowcase stories={homeReviewStories} /></Reveal>
         </div>
       </section>
 
