@@ -7,6 +7,7 @@ import { LeadForm } from "@/components/forms/LeadForm";
 import { Reveal } from "@/components/Reveal";
 import { destinations, getDestination, getDestinations } from "@/data/destinations";
 import { getPageMetadata, pageCopy } from "@/data/page-copy";
+import { site } from "@/data/site";
 import { hasLocale, localizePath } from "@/lib/i18n";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
@@ -40,17 +41,21 @@ export default async function DestinationPage({ params }: Props) {
           <Image src={destination.image} alt="" fill loading="eager" fetchPriority="high" sizes="100vw" className="object-cover opacity-55" />
           <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-navy-950/40 to-navy-950/20" />
         </div>
-        <div className="container py-12 sm:py-18">
-          <div className="mb-6 flex flex-wrap gap-3">
-            <Link href={localizePath("/destinations", locale)} className="button-primary"><span aria-hidden="true">←</span>{common.allDestinations}</Link>
-            <Link href={localizePath("/", locale)} className="inline-flex min-h-12 items-center justify-center rounded-xl border border-white/60 bg-navy-950/60 px-5 py-3 font-semibold text-white">{common.home}</Link>
-          </div>
-          <nav aria-label={common.breadcrumbs} className="flex flex-wrap items-center gap-2 text-sm text-white/90">
+        <div className="container country-hero">
+          <Link href={localizePath("/destinations", locale)} className="country-back"><span aria-hidden="true">←</span>{common.allDestinations}</Link>
+          <nav aria-label={common.breadcrumbs} className="mt-4 flex flex-wrap items-center gap-2 text-sm text-white/90">
+            <Link href={localizePath("/", locale)} className="inline-flex min-h-11 items-center underline-offset-4 hover:underline">{common.home}</Link>
+            <span aria-hidden="true">/</span>
             <Link href={localizePath("/destinations", locale)} className="inline-flex min-h-11 items-center underline-offset-4 hover:underline">{common.destinations}</Link>
             <span aria-hidden="true">/</span><span aria-current="page">{destination.name}</span>
           </nav>
-          <h1 className="mt-3 max-w-4xl text-balance text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl">{destination.title}</h1>
-          <p className="mt-4 text-lg font-semibold text-gold-300">{destination.tagline}</p>
+          <p className="eyebrow mt-6 text-gold-300">{destination.tagline}</p>
+          <h1 className="country-hero-title mt-3 max-w-4xl text-balance font-extrabold text-white">{destination.title}</h1>
+          <p className="mt-5 max-w-2xl text-base leading-7 text-white/90 sm:text-lg">{destination.excerpt}</p>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <a href="#lead" className="button-primary">{common.request}<span aria-hidden="true">→</span></a>
+            <a href={site.social.whatsapp} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 items-center justify-center rounded-xl border border-white/60 bg-navy-950/60 px-6 py-3 font-bold text-white">{common.whatsapp}</a>
+          </div>
         </div>
       </section>
 
@@ -67,8 +72,9 @@ export default async function DestinationPage({ params }: Props) {
             <Reveal className="mt-10"><h2 className="ink text-balance text-2xl font-extrabold tracking-tight sm:text-3xl">{copy.reasonsTitle}</h2></Reveal>
             <div className="mt-6 space-y-5">
               {destination.reasons.map((reason, reasonIndex) => (
-                <Reveal key={reason.title} delay={reasonIndex * 60} className="surface-soft rounded-2xl p-6">
-                  <h3 className="ink text-lg font-extrabold">{reason.title}</h3><p className="muted mt-3 leading-7">{reason.text}</p>
+                <Reveal key={reason.title} delay={reasonIndex * 60} className="reason-card surface-soft rounded-2xl p-6">
+                  <span className="reason-number" aria-hidden="true">{String(reasonIndex + 1).padStart(2, "0")}</span>
+                  <div><h3 className="ink text-lg font-extrabold">{reason.title}</h3><p className="muted mt-2 leading-7">{reason.text}</p></div>
                 </Reveal>
               ))}
             </div>

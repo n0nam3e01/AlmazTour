@@ -25,13 +25,18 @@ export default async function HomePage({ params }: LocalizedPageProps) {
   const { locale } = await params;
   if (!hasLocale(locale)) notFound();
   const { home: copy, common, contacts } = pageCopy[locale];
-  const popularDestinations = getDestinations(locale).slice(0, 5);
+  const allDestinations = getDestinations(locale);
+  const popularDestinations = allDestinations.slice(0, 5);
+  const moreDestinations = allDestinations.slice(5);
 
   return (
     <>
       <section className="travel-hero home-hero">
         <HeroParallax>
           <Image src="/images/destinations/maldives.jpg" alt="" fill loading="eager" fetchPriority="high" sizes="100vw" className="object-cover object-[62%_center]" />
+          {["thailand", "greece"].map((name, index) => (
+            <Image key={name} src={`/images/destinations/${name}.jpg`} alt="" fill loading="lazy" sizes="100vw" className="hero-slide object-cover" style={{ animationDelay: `${(index + 1) * 6}s` }} />
+          ))}
           <div className="hero-shade absolute inset-0" />
         </HeroParallax>
         <div className="container home-hero-layout relative grid py-14 sm:py-20">
@@ -43,6 +48,7 @@ export default async function HomePage({ params }: LocalizedPageProps) {
               <ClickSpark><a href="#search" className="button-primary">{common.search}<span aria-hidden="true">→</span></a></ClickSpark>
               <a href="#lead" className="inline-flex min-h-12 items-center justify-center rounded-xl border border-white/60 bg-navy-950/60 px-6 py-3 font-bold text-white transition-colors hover:bg-navy-950">{common.manager}</a>
             </div>
+            <ul className="hero-trust">{copy.trust.map((item) => <li key={item}>{item}</li>)}</ul>
           </div>
         </div>
       </section>
@@ -78,6 +84,19 @@ export default async function HomePage({ params }: LocalizedPageProps) {
             </div>
           </Reveal>
           <Reveal className="mt-8"><AccordionGallery items={popularDestinations} defaultIndex={2} /></Reveal>
+          <Reveal className="mt-8">
+            <h3 className="eyebrow muted">{copy.moreDestinations}</h3>
+            <ul className="destination-chips">
+              {moreDestinations.map((destination) => (
+                <li key={destination.slug}>
+                  <Link href={localizePath(`/destinations/${destination.slug}`, locale)} className="destination-chip">
+                    <Image src={destination.image} alt="" width={44} height={44} className="destination-chip-photo" />
+                    <span>{destination.name}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
         </div>
       </section>
 
