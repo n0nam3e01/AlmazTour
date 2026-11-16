@@ -42,7 +42,8 @@ export default async function DestinationPage({ params }: Props) {
           <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-navy-950/40 to-navy-950/20" />
         </div>
         <div className="container country-hero">
-          <nav aria-label={common.breadcrumbs} className="flex flex-wrap items-center gap-2 text-sm text-white/90">
+          <Link href={localizePath("/destinations", locale)} className="country-back"><span aria-hidden="true">←</span>{common.allDestinations}</Link>
+          <nav aria-label={common.breadcrumbs} className="mt-4 flex flex-wrap items-center gap-2 text-sm text-white/90">
             <Link href={localizePath("/", locale)} className="inline-flex min-h-11 items-center underline-offset-4 hover:underline">{common.home}</Link>
             <span aria-hidden="true">/</span>
             <Link href={localizePath("/destinations", locale)} className="inline-flex min-h-11 items-center underline-offset-4 hover:underline">{common.destinations}</Link>

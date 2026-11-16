@@ -245,6 +245,8 @@ h1, h2, h3 { font-feature-settings: "ss01", "cv11"; }
 .destination-chip:hover { border-color: var(--muted); box-shadow: var(--shadow-card); transform: translateY(-2px); }
 .destination-chip-photo { width: 44px; height: 44px; flex: none; border-radius: 50%; object-fit: cover; }
 .country-hero { padding-block: clamp(28px, 4vw, 44px) clamp(48px, 7vw, 96px); }
+.country-back { display: inline-flex; min-height: 44px; align-items: center; gap: 10px; padding: 8px 18px 8px 14px; border: 1px solid rgb(255 255 255 / .55); border-radius: 999px; background: rgb(0 9 66 / .55); color: #fff; font-size: .9rem; font-weight: 700; backdrop-filter: blur(6px); }
+.country-back:hover { background: var(--color-navy-950); }
 .country-hero-title { font-size: clamp(2.4rem, 6vw, 4.6rem); line-height: 1.02; letter-spacing: -.055em; }
 .reason-card { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: 18px; }
 .reason-number { display: grid; width: 44px; height: 44px; place-items: center; border-radius: 14px; background: var(--color-gold-400); color: var(--color-navy-950); font-size: .85rem; font-weight: 800; letter-spacing: .04em; }
