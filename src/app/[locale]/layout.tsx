@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Manrope } from "next/font/google";
 import { notFound } from "next/navigation";
 import "../globals.css";
 import { Header } from "@/components/Header";
@@ -11,6 +12,8 @@ import { hasLocale, locales } from "@/lib/i18n";
 import { themeBootScript } from "@/lib/theme";
 import { uiCopy } from "@/data/ui-copy";
 import { site } from "@/data/site";
+
+const manrope = Manrope({ subsets: ["latin", "cyrillic", "cyrillic-ext"], variable: "--font-manrope", display: "swap" });
 
 type Props = {children:React.ReactNode;params:Promise<{locale:string}>};
 export function generateStaticParams() { return locales.map(locale=>({locale})); }
@@ -28,7 +31,7 @@ export default async function LocaleLayout({children,params}:Props) {
   const jsonLd={"@context":"https://schema.org","@type":"TravelAgency",name:site.name,alternateName:site.nameRu,foundingDate:"2018",url:site.url,logo:site.url+"/images/logo.png",telephone:site.phones[0].href.slice(4),email:site.email,
     address:{"@type":"PostalAddress",addressLocality:"Астана",addressCountry:"KZ",streetAddress:site.address.line},hasMap:site.address.map2gis,
     openingHoursSpecification:[{"@type":"OpeningHoursSpecification",dayOfWeek:["Monday","Tuesday","Wednesday","Thursday","Friday"],opens:"10:00",closes:"20:00"},{"@type":"OpeningHoursSpecification",dayOfWeek:["Saturday","Sunday"],opens:"12:00",closes:"16:00"}],sameAs:[site.social.facebook,site.social.instagram]};
-  return <html lang={locale} suppressHydrationWarning className="h-full antialiased"><head>
+  return <html lang={locale} suppressHydrationWarning className={`${manrope.variable} h-full antialiased`}><head>
     <script id="almaz-theme-boot" dangerouslySetInnerHTML={{__html:themeBootScript}}/>
   </head><body className="min-h-full flex flex-col">
     <LocaleProvider locale={locale}><ThemeProvider><SmoothScroll>
