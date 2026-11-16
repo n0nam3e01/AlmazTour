@@ -152,3 +152,41 @@ test('quick forms expose only contacts and comment; detailed fields are optional
   const ids = [...detailed.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);
   assert.equal(ids.length, new Set(ids).size);
 });
+
+test("honeypot submissions report success without delivery", async () => {
+  for (const kind of ["lead", "review", "subscribe"]) {
+    const before = deliveries.length;
+    const res = await routes[kind](request({ ...valid[kind], website: "https://spam.example" }));
+    assert.equal(res.status, 200);
+    assert.equal(deliveries.length, before);
+    assert.equal((await routes[kind](request({ ...valid[kind], website: "" }))).status, 200);
+  }
+  assert.equal(deliveries.length, 3);
+});
+
+test("sixth submission from one address within ten minutes returns 429", async () => {
+  const { isRateLimited, resetRateLimit } = load("src/lib/form-guard.ts");
+  resetRateLimit();
+  const from = (ip) => new Request("http://localhost/api/test", { method: "POST", body: JSON.stringify({ ...valid.subscribe, locale: "kk" }), headers: { "x-forwarded-for": ip + ", 10.0.0.1" } });
+  for (let i = 0; i < 5; i += 1) assert.equal((await routes.subscribe(from("203.0.113.7"))).status, 200);
+  const blocked = await routes.subscribe(from("203.0.113.7"));
+  assert.equal(blocked.status, 429);
+  assert.match((await blocked.json()).error, /[әғқңөұүһі]/i);
+  assert.equal(deliveries.length, 5);
+  assert.equal((await routes.lead(from("203.0.113.8"))).status, 422);
+  assert.equal((await routes.subscribe(from("203.0.113.8"))).status, 200);
+  const later = Date.now() + 10 * 60 * 1000 + 1;
+  assert.equal(isRateLimited(from("203.0.113.7"), later), false);
+  resetRateLimit();
+});
+
+test("forms render a hidden trap field outside the tab order", () => {
+  const React = require("react");
+  const { renderToStaticMarkup } = require("react-dom/server");
+  const { LocaleProvider } = load("src/components/LocaleProvider.tsx");
+  for (const [file, name] of [["LeadForm", "LeadForm"], ["ReviewForm", "ReviewForm"], ["SubscribeForm", "SubscribeForm"]]) {
+    const Form = load("src/components/forms/" + file + ".tsx")[name];
+    const html = renderToStaticMarkup(React.createElement(LocaleProvider, { locale: "ru" }, React.createElement(Form)));
+    assert.match(html, /<div aria-hidden="true"[^>]*><input[^>]*name="website"[^>]*tabindex="-1"|<div aria-hidden="true"[^>]*><input[^>]*tabindex="-1"[^>]*name="website"/i, file);
+  }
+});

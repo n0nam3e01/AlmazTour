@@ -37,11 +37,4 @@ export const site = {
     instagram: "https://www.instagram.com/almaztour.kz/",
     whatsapp: "https://api.whatsapp.com/send?phone=77758889732",
   },
-
-  counters: [
-    { value: "с 2018", label: "подбираем туры из Астаны" },
-    { value: "множество", label: "довольных клиентов" },
-    { value: "множество", label: "отелей в подборке" },
-    { value: 100, suffix: "%", label: "безопасность и надёжность" },
-  ],
 } as const;

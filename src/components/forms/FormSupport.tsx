@@ -6,6 +6,7 @@ import { formCopy } from "@/data/form-copy";
 import { site } from "@/data/site";
 import { clearDraft, readDraft, writeDraft } from "@/lib/form-draft";
 import type { FormErrors } from "@/lib/leads";
+import { TRAP_FIELD } from "@/lib/form-guard";
 import { submitForm } from "./form-request";
 
 type DraftFields = Record<string, string | string[]>;
@@ -44,6 +45,7 @@ export function useFormSubmission(kind: "lead" | "review" | "subscribe") {
   async function submit(event: FormEvent<HTMLFormElement>, payload: Record<string, unknown>, validate: Validator, clear: () => void) {
     event.preventDefault();
     if (inFlight.current || status === "done") return;
+    const trap = event.currentTarget.elements.namedItem(TRAP_FIELD);
     const result = validate(payload);
     setErrors(result.errors ?? {});
     if (!result.ok) {
@@ -53,7 +55,7 @@ export function useFormSubmission(kind: "lead" | "review" | "subscribe") {
     }
     inFlight.current = true;
     setStatus("sending");
-    const response = await submitForm(kind, payload);
+    const response = await submitForm(kind, { ...payload, [TRAP_FIELD]: trap instanceof HTMLInputElement ? trap.value : "" });
     if (response.ok) {
       clear();
       setStatus("done");
@@ -68,6 +70,13 @@ export function useFormSubmission(kind: "lead" | "review" | "subscribe") {
     if (status !== "sending" && status !== "done") setStatus("idle");
   }
   return { errors, status, submit, edited };
+}
+
+/** Поле-ловушка для ботов: скрыто от людей, клавиатуры и экранных читалок. */
+export function Honeypot() {
+  return <div aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: 1, height: 1, overflow: "hidden" }}>
+    <input type="text" name={TRAP_FIELD} tabIndex={-1} autoComplete="off" defaultValue="" />
+  </div>;
 }
 
 export function Field({ id, label, error, children }: { id: string; label: string; error?: string; children: ReactNode }) {

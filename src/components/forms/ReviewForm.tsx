@@ -4,7 +4,7 @@ import { useId } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { formCopy } from "@/data/form-copy";
 import { FORM_LIMITS, validateReview } from "@/lib/leads";
-import { Field, SubmissionNotice, useFormDraft, useFormSubmission } from "./FormSupport";
+import { Field, Honeypot, SubmissionNotice, useFormDraft, useFormSubmission } from "./FormSupport";
 
 export function ReviewForm() {
   const locale = useLocale();
@@ -17,6 +17,7 @@ export function ReviewForm() {
 
   return <form onSubmit={event => void submit(event, { ...form, locale }, validateReview, clear)} noValidate aria-busy={status === "sending"} className="grid gap-4">
     <fieldset disabled={status === "sending"} className="grid min-w-0 gap-4">
+      <Honeypot />
       <Field id={`${id}-name`} label={`${copy.name} *`} error={errors.name ? copy.errors.name : undefined}>
         <input id={`${id}-name`} name="name" autoComplete="name" required maxLength={FORM_LIMITS.name} value={form.name}
           onChange={event => { update({ name: event.target.value }); edited("name"); }} placeholder={copy.namePlaceholder}
