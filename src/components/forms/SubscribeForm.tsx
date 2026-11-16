@@ -4,7 +4,7 @@ import { useId } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { formCopy } from "@/data/form-copy";
 import { FORM_LIMITS, validateSubscribe } from "@/lib/leads";
-import { Field, SubmissionNotice, useFormDraft, useFormSubmission } from "./FormSupport";
+import { Field, Honeypot, SubmissionNotice, useFormDraft, useFormSubmission } from "./FormSupport";
 
 /** A request delivered to a manager, without promising automated email. */
 export function SubscribeForm() {
@@ -18,6 +18,7 @@ export function SubscribeForm() {
 
   return <form onSubmit={event => void submit(event, { ...form, locale }, validateSubscribe, clear)} noValidate aria-busy={status === "sending"} className="mt-4">
     <fieldset disabled={status === "sending"} className="grid min-w-0 gap-3">
+      <Honeypot />
       <Field id={`${id}-email`} label={copy.email} error={errors.email ? copy.errors.email : undefined}>
         <input id={`${id}-email`} name="email" type="email" autoComplete="email" spellCheck={false} required maxLength={FORM_LIMITS.email}
           value={form.email} onChange={event => { update({ email: event.target.value }); edited("email"); }} placeholder="name@example.com"

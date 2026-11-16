@@ -5,7 +5,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import { getDestinations } from "@/data/destinations";
 import { formCopy, type FormField } from "@/data/form-copy";
 import { FORM_LIMITS, STAR_OPTIONS, validateLead } from "@/lib/leads";
-import { Field, SubmissionNotice, useFormDraft, useFormSubmission } from "./FormSupport";
+import { Field, Honeypot, SubmissionNotice, useFormDraft, useFormSubmission } from "./FormSupport";
 
 type LeadFormProps = { defaultCountry?: string; mode?: "quick" | "detailed"; context?: string };
 
@@ -46,6 +46,7 @@ export function LeadForm({ defaultCountry = "", mode = "detailed", context = "" 
 
   return <form onSubmit={event => void submit(event, payload, validateLead, clear)} noValidate aria-busy={status === "sending"} className="grid gap-4 sm:grid-cols-2">
     <fieldset disabled={status === "sending"} className="contents">
+      <Honeypot />
       {input("name", { required: true, placeholder: copy.namePlaceholder, autoComplete: "name" })}
       {input("phone", { required: true, type: "tel", placeholder: "+7 777 123 45 67", autoComplete: "tel" })}
 
